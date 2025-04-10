@@ -1,0 +1,26 @@
+---
+import { SOCIAL } from '@/consts/social'
+---
+
+<footer class="relative min-h-[200px] w-full">
+  <div class="relative flex h-full flex-col items-center justify-center">
+    <div class="footer-content">
+      <p class="text-center">© 2025 CAMI. Todos los derechos reservados.</p>
+    </div>
+    <div class="mt-4 flex flex-row items-center justify-center gap-x-2">
+      {
+        SOCIAL.map(({ url, image, name, label }) => (
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={label ?? name}
+            class="flex items-center justify-center transition hover:scale-125"
+          >
+            <image.logo />
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</footer>

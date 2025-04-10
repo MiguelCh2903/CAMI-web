@@ -1,0 +1,89 @@
+---
+import { languages } from '@/i18n/ui'
+import { getLangFromUrl, useTranslations } from '@/i18n/utils'
+import LanguageIcon from '@/assets/svg/language.svg'
+import ChevronDownIcon from '@/assets/svg/chevron-down.svg'
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
+import { navItems } from '@/consts/header'
+import { SOCIAL } from '@/consts/social'
+---
+
+<header class="sticky top-0 z-[100] md:top-6">
+  <nav class="mx-auto flex max-w-6xl items-center justify-between rounded-full px-10 py-2">
+    <a href={`/${lang}`} class="font-bold tracking-[7px] italic transition hover:scale-120">CAMI</a>
+    <ul class="absolute left-1/2 flex -translate-x-1/2 items-center gap-10">
+      {
+        navItems.map(({ href, label }) => (
+          <li>
+            <a href={`/${lang}/${href}`} class="text-sm tracking-wider hover:mx-1">
+              {t(label)}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="flex items-center">
+      <div class="flex items-center gap-x-1">
+        {
+          SOCIAL.map(({ url, image, name, label }) => (
+            <a
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={label ?? name}
+              class="flex items-center justify-center transition hover:scale-120"
+            >
+              <image.logo height={image.height} width={image.width} />
+            </a>
+          ))
+        }
+      </div>
+      <div class="dropdown dropdown-end">
+        <div
+          tabindex="0"
+          role="button"
+          class="btn btn-icon btn-ghost h-8 w-28 gap-1.5 hover:border-none hover:bg-transparent"
+        >
+          <LanguageIcon class="size-4.5" />
+          {languages[lang]}
+          <ChevronDownIcon class="size-4.5" />
+        </div>
+        <ul
+          tabindex="0"
+          class="menu dropdown-content bg-base-100 rounded-box z-1 w-26 p-2 shadow-sm"
+        >
+          {
+            Object.entries(languages).map(([code, label]) => (
+              <li>
+                <a href={`/${code}/`}>{label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<style>
+  nav {
+    background: transparent;
+    animation: header-blur-scroll 0.3s linear both;
+    animation-timeline: scroll();
+    animation-range: 0 250px;
+  }
+
+  @keyframes header-blur-scroll {
+    0% {
+      backdrop-filter: blur(0px);
+      background: transparent;
+    }
+
+    100% {
+      backdrop-filter: blur(12px);
+      background: rgba(211, 211, 211, 0.2);
+    }
+  }
+</style>

@@ -1,0 +1,83 @@
+---
+// Define the prop type for the component
+export interface Props {
+  texts: string[]
+}
+
+// Destructure the texts prop passed to the component
+const { texts } = Astro.props
+---
+
+<!--
+  Container for the typewriter effect.
+  It holds two spans: one for the text and one for the cursor with a pulsating effect.
+  The "data-texts" attribute serializes the list of texts so that the client-side script can use it.
+-->
+<div id="typewriter" data-texts={JSON.stringify(texts)} class="flex text-gray-500">
+  <span id="typewriter-text"></span>
+  <span id="cursor" class="-ml-4 animate-pulse font-mono">|</span>
+</div>
+
+<!-- Client-side script to handle the typewriter effect -->
+<script>
+  // Get the typewriter container and text element
+  const container = document.getElementById('typewriter')
+  const textElement = document.getElementById('typewriter-text')
+
+  // Parse the texts from the data attribute
+  const texts = JSON.parse(container?.getAttribute('data-texts') || '')
+
+  // Configuration for the typewriter effect
+  const typingSpeed = 100 // ms per character when typing
+  const pauseDuration = 1600 // pause time (in ms) at the end of each text
+  const deletingSpeed = 50 // ms per character when deleting
+
+  let textIndex = 0 // index of the current text
+  let charIndex = 0 // index of the current character
+  let isDeleting = false // flag to indicate if we are deleting characters
+
+  /**
+   * The type() function updates the text displayed in the typewriter element.
+   * It types or deletes one character at a time and schedules the next update based on the effect state.
+   */
+  function type() {
+    const currentText = texts[textIndex]
+    let updatedText
+
+    if (isDeleting) {
+      // Remove one character from the end
+      updatedText = currentText.substring(0, charIndex - 1)
+      charIndex--
+    } else {
+      // Add one character to the display
+      updatedText = currentText.substring(0, charIndex + 1)
+      charIndex++
+    }
+
+    // Update the text element with the new content
+    if (!textElement) return
+    textElement.textContent = updatedText
+
+    // Determine delay based on the current state
+    let delay = typingSpeed
+    if (!isDeleting && updatedText === currentText) {
+      // When full text is displayed, pause before deleting
+      delay = pauseDuration
+      isDeleting = true
+    } else if (isDeleting && updatedText === '') {
+      // When text is completely deleted, move to the next text
+      isDeleting = false
+      textIndex = (textIndex + 1) % texts.length
+      delay = typingSpeed
+    } else if (isDeleting) {
+      // Speed up deletion
+      delay = deletingSpeed
+    }
+
+    // Schedule the next call to type()
+    setTimeout(type, delay)
+  }
+
+  // Start the typewriter effect
+  document.addEventListener('DOMContentLoaded', type)
+</script>

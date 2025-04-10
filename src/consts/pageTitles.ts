@@ -1,0 +1,1 @@
+export const fixedTitle = "CAMI - Mechatronics"

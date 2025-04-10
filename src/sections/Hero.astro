@@ -1,0 +1,26 @@
+---
+import { getLangFromUrl, useTranslations } from '@/i18n/utils'
+import { Image } from 'astro:assets'
+import CamiBot from '@/assets/img/cami-bot.png'
+import TypeWriter from '@/components/Typewriter.astro'
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
+---
+
+<section id="hero" class="relative">
+  <Image src={CamiBot} alt="CamiBot" class="absolute right-0 bottom-0 w-[54rem]" />
+  <div class="relative mx-auto flex h-screen max-w-6xl items-center">
+    <div class="flex flex-col gap-6">
+      <span class="text-xl">
+        {t('hero.acronym')}
+      </span>
+      <h2 class="flex flex-col gap-8 text-7xl tracking-[10pt] italic">
+        <span>{t('hero.slogan')}</span>
+        <TypeWriter texts={t('hero.array') as string[]} />
+      </h2>
+    </div>
+  </div>
+  <div class="absolute bottom-0 left-0 h-16 w-full bg-gradient-to-t from-white to-transparent">
+  </div>
+</section>
